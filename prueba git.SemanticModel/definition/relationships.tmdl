@@ -1,0 +1,5 @@
+relationship b236c2a6-3e8d-447e-b15e-bb78947f88d2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Amazon Echo 2 Reviews'.'Review Date'
+	toColumn: LocalDateTable_02d8c406-3d66-44eb-8b37-8dc7ab3797b9.Date
+

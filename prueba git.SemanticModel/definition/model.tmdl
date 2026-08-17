@@ -1,0 +1,21 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Amazon Echo 2 Reviews"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Amazon Echo 2 Reviews'
+ref table DateTableTemplate_7773bf5c-7083-444f-a905-de2b54026235
+ref table LocalDateTable_02d8c406-3d66-44eb-8b37-8dc7ab3797b9
+
+ref cultureInfo en-US
+

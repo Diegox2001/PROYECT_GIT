@@ -1,0 +1,165 @@
+table 'Amazon Echo 2 Reviews'
+	lineageTag: 0912953c-f300-418b-8c3d-ef6cca676e5e
+
+	measure 'Total Reviews' =
+			
+			COUNTROWS('Amazon Echo 2 Reviews')
+		formatString: 0
+		lineageTag: 6445c97e-5791-4877-b744-90b045d9f359
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Average Rating' =
+			
+			AVERAGE('Amazon Echo 2 Reviews'[Rating])
+		lineageTag: fa670c8d-bc32-4322-b98b-2d0f0b3ac34c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Useful Votes' =
+			
+			SUM('Amazon Echo 2 Reviews'[Review Useful Count])
+		formatString: 0
+		lineageTag: 06368f14-6bfd-4632-ac15-b34b851fd3de
+
+	measure 'Avg Useful Votes' =
+			
+			AVERAGE('Amazon Echo 2 Reviews'[Review Useful Count])
+		lineageTag: 0a4a94c5-edfe-4fdf-a1b0-2dd9982f2a2a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Verified Reviews' =
+			
+			CALCULATE(
+			    [Total Reviews],
+			    'Amazon Echo 2 Reviews'[User Verified] = "Verified Purchase"
+			)
+		formatString: 0
+		lineageTag: 9246e06c-5383-4473-8007-cd4005f6f822
+
+	measure 'Verified %' =
+			
+			DIVIDE(
+			    [Verified Reviews],
+			    [Total Reviews],
+			    0
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 8fe43374-69a5-454b-b7bf-603b2e9ae49b
+
+	column Pageurl
+		dataType: string
+		lineageTag: 3b6783da-b5ed-4c6d-97d7-81c9f6bdf305
+		summarizeBy: none
+		sourceColumn: Pageurl
+
+		annotation SummarizationSetBy = Automatic
+
+	column Title
+		dataType: string
+		lineageTag: 72c8a4a8-b057-4e74-8af8-17d9198590ff
+		summarizeBy: none
+		sourceColumn: Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Review Text'
+		dataType: string
+		lineageTag: ae79716c-3989-4a4d-80a9-14e3e8bcb867
+		summarizeBy: none
+		sourceColumn: Review Text
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Review Color'
+		dataType: string
+		lineageTag: c3e009a0-ca95-4a28-8bf2-12a3ffde290f
+		summarizeBy: none
+		sourceColumn: Review Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'User Verified'
+		dataType: string
+		lineageTag: 2d01ebd9-cd84-4be0-9f49-16ba5a5829c6
+		summarizeBy: none
+		sourceColumn: User Verified
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Review Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 16c5cc53-0a1c-451a-8ae3-839a19da47bb
+		summarizeBy: none
+		sourceColumn: Review Date
+
+		variation Variation
+			isDefault
+			relationship: b236c2a6-3e8d-447e-b15e-bb78947f88d2
+			defaultHierarchy: LocalDateTable_02d8c406-3d66-44eb-8b37-8dc7ab3797b9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Review Useful Count'
+		dataType: int64
+		formatString: 0
+		lineageTag: 72ec7332-1b01-447a-8df7-ccfae58295ce
+		summarizeBy: sum
+		sourceColumn: Review Useful Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Configuration Text'
+		dataType: string
+		lineageTag: ebedbbfa-285e-42b3-a6e4-bcc3771bfab5
+		summarizeBy: none
+		sourceColumn: Configuration Text
+
+		annotation SummarizationSetBy = Automatic
+
+	column Rating
+		dataType: int64
+		formatString: 0
+		lineageTag: 738d5c90-6bfe-4e2a-a799-3501649c222d
+		summarizeBy: sum
+		sourceColumn: Rating
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Declaration Text'
+		dataType: string
+		lineageTag: c1db27ba-2419-464a-b587-21e42b84b9e8
+		summarizeBy: none
+		sourceColumn: Declaration Text
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Review Sentiment' =
+			
+			SWITCH(
+			    TRUE(),
+			    'Amazon Echo 2 Reviews'[Rating] >= 4, "Positive",
+			    'Amazon Echo 2 Reviews'[Rating] = 3, "Neutral",
+			    'Amazon Echo 2 Reviews'[Rating] <= 2, "Negative"
+			)
+		lineageTag: 3f5fc4a3-2959-4faf-84dc-e5e914f10d4d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Amazon Echo 2 Reviews' = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\CrazyLlamaPeru\Documents\PROYECT GIT\Amazon Echo 2 Reviews.csv"),[Delimiter=",", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Pageurl", type text}, {"Title", type text}, {"Review Text", type text}, {"Review Color", type text}, {"User Verified", type text}, {"Review Date", type date}, {"Review Useful Count", Int64.Type}, {"Configuration Text", type text}, {"Rating", Int64.Type}, {"Declaration Text", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
